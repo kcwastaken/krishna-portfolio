@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Krishna Chaudhary | AI/ML Developer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="titleScreen" class="screen">
+        <div class="shooting-stars" aria-hidden="true">
+            <div class="star"></div>
+            <div class="star"></div>
+            <div class="star"></div>
+        </div>
+
+        <div class="title-container">
+            <h1 class="main-title">KRISHNA CHAUDHARY</h1>
+            <h2 class="main-subtitle">AI/ML DEVELOPER</h2>
+            <button id="mainMenuStart" class="start-btn" type="button">PRESS START</button>
+            <p class="insert-coin">INSERT COIN TO CONTINUE</p>
+        </div>
+
+        <img src="hero.png" alt="Pixel Hero" class="hero-sprite">
+    </div>
+
+    <div id="portfolioScreen" class="screen hidden">
+        <nav class="top-nav" aria-label="Main navigation">
+            <a class="nav-link" href="#home">HOME</a>
+            <a class="nav-link" href="#lore">LORE</a>
+            <a class="nav-link" href="#quests">QUESTS</a>
+            <a class="nav-link" href="#achievements">ACHIEVEMENTS</a>
+            <a class="nav-link" href="#contact">CONTACT</a>
+        </nav>
+
+        <div class="portfolio-content-box">
+            <header id="home" class="portfolio-header">
+                <h1 class="title">KRISHNA CHAUDHARY</h1>
+                <h2 class="subtitle">AI/ML Developer & IT Student</h2>
+            </header>
+
+            <section id="lore" class="about-section">
+                <div class="about-container">
+                    <div class="story-box">
+                        <h2 class="section-title">PLAYER LORE</h2>
+                        <p>I am a B.Tech IT student specializing in Artificial Intelligence and Machine Learning.</p>
+                        <p>From building end-to-end CNN pipelines for Brain Tumor Detection to creating real-time Indian Sign Language recognition systems, I love turning complex data into functional reality.</p>
+                    </div>
+                    <div class="profile-pic-box">
+                        <img src="your-photo.jpg" alt="Krishna Chaudhary" class="pixel-portrait">
+                    </div>
+                </div>
+            </section>
+
+            <section id="quests" class="quests-section">
+                <div class="card-container">
+                    <div class="quest-card">
+                        <div class="card-inner">
+                            <div class="card-front">
+                                <h3>Tumor Detection</h3>
+                                <div class="icon">🧠</div>
+                                <p class="hover-text">Hover to inspect mission</p>
+                            </div>
+                            <div class="card-back">
+                                <h3>Tumor Detection</h3>
+                                <p>92% Accuracy</p>
+                                <p>TensorFlow</p>
+                                <p>OpenCV</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="quest-card">
+                        <div class="card-inner">
+                            <div class="card-front">
+                                <h3>Real-Time ISL</h3>
+                                <div class="icon">✋</div>
+                                <p class="hover-text">Hover to inspect mission</p>
+                            </div>
+                            <div class="card-back">
+                                <h3>Real-Time ISL</h3>
+                                <p>95% Gesture Acc</p>
+                                <p>FastAPI</p>
+                                <p>MediaPipe</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="achievements" class="guild-section">
+                <div class="xp-box">
+                    <h3>Management Head @ IETE Society</h3>
+                    <p class="date">Leadership • Team Coordination • Event Ops</p>
+                </div>
+                <div class="xp-box">
+                    <h3>Management Trainee @ Heka Fashion</h3>
+                    <p class="date">Operations • Strategy • Brand Growth</p>
+                </div>
+            </section>
+
+            <section id="contact" class="contact-section">
+                <div class="contact-links">
+                    <a class="social-btn" href="mailto:krishna@chaudhary.dev">Email</a>
+                    <a class="social-btn" href="https://www.linkedin.com/" target="_blank" rel="noreferrer">LinkedIn</a>
+                    <a class="social-btn" href="https://github.com/" target="_blank" rel="noreferrer">GitHub</a>
+                </div>
+            </section>
+
+            <div class="game-container">
+                <canvas id="portfolioGame" width="600" height="200"></canvas>
+                <p class="game-instructions">Press <span class="highlight">SPACE</span> to Jump</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
