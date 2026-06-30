@@ -6,6 +6,11 @@ let score = 0;
 let isGameOver = false;
 let gameStarted = false;
 
+const keys = {
+    left: false,
+    right: false
+};
+
 const player = {
     x: 60,
     y: 120,
@@ -13,8 +18,9 @@ const player = {
     height: 24,
     color: '#33FF66',
     velocityY: 0,
-    gravity: 0.8,
-    jumpPower: -10,
+    gravity: 0.9,
+    jumpPower: -9.5,
+    airControl: 0.8,
     isJumping: false,
 
     draw() {
@@ -25,6 +31,13 @@ const player = {
     update() {
         this.velocityY += this.gravity;
         this.y += this.velocityY;
+
+        const horizontalInput = (keys.right ? 1 : 0) - (keys.left ? 1 : 0);
+        if (horizontalInput !== 0) {
+            this.x += horizontalInput * (this.isJumping ? this.airControl : 1.4);
+        }
+
+        this.x = Math.max(0, Math.min(canvas.width - this.width, this.x));
 
         if (this.y + this.height >= canvas.height - 20) {
             this.y = canvas.height - this.height - 20;
@@ -65,12 +78,14 @@ function drawGround() {
 
 function drawScore() {
     ctx.fillStyle = '#ffffff';
-    ctx.font = '16px "Press Start 2P"';
+    ctx.font = '14px "Press Start 2P"';
+    ctx.textAlign = 'right';
     ctx.shadowColor = '#000000';
     ctx.shadowOffsetX = 2;
     ctx.shadowOffsetY = 2;
-    ctx.fillText(`Score: ${score}`, 10, 24);
+    ctx.fillText(`Score: ${score}`, canvas.width - 12, 24);
     ctx.shadowColor = 'transparent';
+    ctx.textAlign = 'left';
 }
 
 function handleObstacles() {
@@ -102,7 +117,7 @@ function handleObstacles() {
 
         if (obstacle.x + obstacle.width < 0) {
             obstacles.splice(i, 1);
-            score += 1;
+            score += 10;
             i -= 1;
         }
     }
@@ -118,6 +133,7 @@ function gameLoop() {
         player.draw();
         handleObstacles();
         drawScore();
+        score += 1;
         frames += 1;
         requestAnimationFrame(gameLoop);
     } else if (isGameOver) {
@@ -142,6 +158,13 @@ function gameLoop() {
 }
 
 document.addEventListener('keydown', (event) => {
+    if (event.code === 'ArrowLeft' || event.code === 'KeyA') {
+        keys.left = true;
+    }
+    if (event.code === 'ArrowRight' || event.code === 'KeyD') {
+        keys.right = true;
+    }
+
     if (event.code === 'Space') {
         event.preventDefault();
 
@@ -163,10 +186,22 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
+document.addEventListener('keyup', (event) => {
+    if (event.code === 'ArrowLeft' || event.code === 'KeyA') {
+        keys.left = false;
+    }
+    if (event.code === 'ArrowRight' || event.code === 'KeyD') {
+        keys.right = false;
+    }
+});
+
 const mainMenuStartBtn = document.getElementById('mainMenuStart');
 const titleScreen = document.getElementById('titleScreen');
 const portfolioScreen = document.getElementById('portfolioScreen');
 const gameContainerDiv = document.querySelector('.game-container');
+const questCards = document.querySelectorAll('.quest-card');
+const contactForm = document.getElementById('contactForm');
+const formStatus = document.getElementById('formStatus');
 
 if (mainMenuStartBtn) {
     mainMenuStartBtn.addEventListener('click', () => {
@@ -175,6 +210,55 @@ if (mainMenuStartBtn) {
         gameContainerDiv.style.display = 'block';
         gameStarted = true;
         requestAnimationFrame(gameLoop);
+    });
+}
+
+questCards.forEach((card) => {
+    card.addEventListener('click', () => {
+        card.classList.toggle('is-flipped');
+    });
+
+    card.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            card.classList.toggle('is-flipped');
+        }
+    });
+});
+
+if (contactForm) {
+    contactForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const submitButton = contactForm.querySelector('button[type="submit"]');
+        const action = contactForm.getAttribute('action');
+
+        if (action.includes('your-form-id')) {
+            formStatus.textContent = 'Replace the Formspree endpoint with your own ID to activate the form.';
+            return;
+        }
+
+        submitButton.disabled = true;
+        submitButton.textContent = 'SENDING...';
+
+        try {
+            const response = await fetch(action, {
+                method: 'POST',
+                body: new FormData(contactForm),
+                headers: { Accept: 'application/json' }
+            });
+
+            if (response.ok) {
+                contactForm.reset();
+                formStatus.textContent = 'Message sent! I will reply soon.';
+            } else {
+                throw new Error('Failed to send');
+            }
+        } catch (error) {
+            formStatus.textContent = 'The message could not be sent. Please email me directly.';
+        } finally {
+            submitButton.disabled = false;
+            submitButton.textContent = 'SEND';
+        }
     });
 }
 

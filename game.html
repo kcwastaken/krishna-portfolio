@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Krishna Chaudhary | Easter Egg Run</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="top-nav" aria-label="Main navigation">
+        <a class="nav-link" href="index.html">HOME</a>
+        <a class="nav-link" href="index.html#lore">LORE</a>
+        <a class="nav-link" href="index.html#quests">QUESTS</a>
+        <a class="nav-link" href="game.html">EASTER EGG</a>
+        <a class="nav-link" href="contact.html">CONTACT ME</a>
+    </nav>
+
+    <main class="page-shell">
+        <section class="content-panel game-panel">
+            <h1 class="page-title">EASTER EGG RUN</h1>
+            <p class="section-copy">Dodge the blocks, stay airborne, and chase a high score.</p>
+            <div class="game-surface">
+                <canvas id="arcadeGame" width="620" height="220"></canvas>
+            </div>
+            <p class="game-instructions">Press <span class="highlight">SPACE</span> to jump · <span class="highlight">A/D</span> or arrows to drift</p>
+        </section>
+    </main>
+
+    <script>
+        const canvas = document.getElementById('arcadeGame');
+        const ctx = canvas.getContext('2d');
+
+        const player = {
+            x: 60,
+            y: 140,
+            width: 24,
+            height: 24,
+            velocityY: 0,
+            gravity: 0.68,
+            jumpPower: -10.2,
+            isOnGround: true,
+            airControl: 1.2,
+            color: '#33FF66'
+        };
+
+        const keys = { left: false, right: false };
+        const obstacles = [];
+        let frame = 0;
+        let score = 0;
+        let gameOver = false;
+        let started = false;
+
+        function drawBackground() {
+            ctx.fillStyle = '#5C94FC';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(40, 40, 60, 18);
+            ctx.fillRect(250, 30, 70, 22);
+            ctx.fillRect(440, 46, 50, 16);
+        }
+
+        function drawGround() {
+            ctx.fillStyle = '#C84C0C';
+            ctx.fillRect(0, canvas.height - 24, canvas.width, 24);
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, canvas.height - 24, canvas.width, 2);
+        }
+
+        function drawPlayer() {
+            ctx.fillStyle = player.color;
+            ctx.fillRect(player.x, player.y, player.width, player.height);
+        }
+
+        function drawScore() {
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '14px "Press Start 2P"';
+            ctx.textAlign = 'right';
+            ctx.shadowColor = '#000';
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetX = 2;
+            ctx.shadowOffsetY = 2;
+            ctx.fillText(`Score ${score}`, canvas.width - 16, 28);
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
+            ctx.textAlign = 'left';
+        }
+
+        function spawnObstacle() {
+            obstacles.push({
+                x: canvas.width,
+                y: canvas.height - 48,
+                width: 18,
+                height: 24,
+                speed: 4 + Math.random() * 2,
+                color: '#FF3366'
+            });
+        }
+
+        function updateObstacles() {
+            if (frame % 100 === 0) {
+                spawnObstacle();
+            }
+
+            for (let i = obstacles.length - 1; i >= 0; i -= 1) {
+                const obstacle = obstacles[i];
+                obstacle.x -= obstacle.speed;
+                ctx.fillStyle = obstacle.color;
+                ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+
+                if (player.x < obstacle.x + obstacle.width && player.x + player.width > obstacle.x && player.y < obstacle.y + obstacle.height && player.y + player.height > obstacle.y) {
+                    gameOver = true;
+                }
+
+                if (obstacle.x + obstacle.width < 0) {
+                    obstacles.splice(i, 1);
+                    score += 10;
+                }
+            }
+        }
+
+        function updatePlayer() {
+            player.velocityY += player.gravity;
+            player.y += player.velocityY;
+
+            if (keys.right) {
+                player.x += player.airControl;
+            } else if (keys.left) {
+                player.x -= player.airControl;
+            }
+
+            player.x = Math.max(0, Math.min(canvas.width - player.width, player.x));
+
+            if (player.y + player.height >= canvas.height - 24) {
+                player.y = canvas.height - 24 - player.height;
+                player.velocityY = 0;
+                player.isOnGround = true;
+            }
+        }
+
+        function jump() {
+            if (player.isOnGround) {
+                player.velocityY = player.jumpPower;
+                player.isOnGround = false;
+            }
+        }
+
+        function loop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawBackground();
+            drawGround();
+
+            if (!started) {
+                drawPlayer();
+                drawScore();
+                ctx.fillStyle = '#ffffff';
+                ctx.font = '12px "Press Start 2P"';
+                ctx.fillText('Press SPACE to start', 180, 110);
+                return;
+            }
+
+            if (!gameOver) {
+                updatePlayer();
+                updateObstacles();
+                drawPlayer();
+                drawScore();
+                frame += 1;
+                score += 1;
+                requestAnimationFrame(loop);
+            } else {
+                drawPlayer();
+                ctx.fillStyle = '#FF3366';
+                ctx.font = '18px "Press Start 2P"';
+                ctx.fillText('GAME OVER', 200, 100);
+                ctx.fillStyle = '#ffffff';
+                ctx.font = '12px "Press Start 2P"';
+                ctx.fillText('Press SPACE to replay', 170, 130);
+            }
+        }
+
+        window.addEventListener('keydown', (event) => {
+            if (event.code === 'ArrowLeft' || event.code === 'KeyA') {
+                keys.left = true;
+            }
+            if (event.code === 'ArrowRight' || event.code === 'KeyD') {
+                keys.right = true;
+            }
+            if (event.code === 'Space') {
+                event.preventDefault();
+                if (!started) {
+                    started = true;
+                    requestAnimationFrame(loop);
+                } else if (gameOver) {
+                    gameOver = false;
+                    score = 0;
+                    frame = 0;
+                    obstacles.length = 0;
+                    player.y = 140;
+                    player.velocityY = 0;
+                    player.isOnGround = true;
+                    requestAnimationFrame(loop);
+                } else {
+                    jump();
+                }
+            }
+        });
+
+        window.addEventListener('keyup', (event) => {
+            if (event.code === 'ArrowLeft' || event.code === 'KeyA') {
+                keys.left = false;
+            }
+            if (event.code === 'ArrowRight' || event.code === 'KeyD') {
+                keys.right = false;
+            }
+        });
+
+        drawBackground();
+        drawGround();
+        drawPlayer();
+        drawScore();
+    </script>
+</body>
+</html>
