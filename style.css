@@ -487,6 +487,28 @@ h1, h2, h3, .title, .page-title, .section-title, .main-title, .main-subtitle,
     background: rgba(255, 204, 0, 0.08);
 }
 
+.nav-egg-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    min-height: 2.1rem;
+    padding: 0.25rem;
+    image-rendering: pixelated;
+}
+
+.nav-egg-icon {
+    display: block;
+    width: 1.45rem;
+    height: 1.45rem;
+    object-fit: contain;
+    transition: var(--transition);
+}
+
+.nav-egg-link:hover .nav-egg-icon {
+    transform: translateY(-1px) scale(1.08);
+}
+
 .nav-link.nav-cta {
     background: var(--accent-red);
     color: #fff;

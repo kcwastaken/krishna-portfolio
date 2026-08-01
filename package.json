@@ -1,0 +1,24 @@
+{
+  "name": "portfolio-website",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "dev": "vite"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kcwastaken/krishna-portfolio.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/kcwastaken/krishna-portfolio/issues"
+  },
+  "homepage": "https://github.com/kcwastaken/krishna-portfolio#readme",
+  "devDependencies": {
+    "vite": "^8.1.5"
+  }
+}

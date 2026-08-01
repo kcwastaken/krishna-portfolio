@@ -199,7 +199,11 @@ function updateObstacles() {
         ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, 3);
 
         if (isColliding(player, obstacle)) {
-            isGameOver = true;
+            // TRIGGER THE SCORE SAVE ONLY ONCE WHEN THE PLAYER HITS AN OBSTACLE
+            if (!isGameOver) {
+                isGameOver = true;
+                saveScore("Krishna", Math.floor(score));
+            }
         }
 
         if (obstacle.x + obstacle.width < 0) {
@@ -371,10 +375,48 @@ function bindPortfolioUi() {
     });
 }
 
+// ASYNC DATABASE FUNCTIONS
+async function saveScore(playerName, playerScore) {
+    try {
+        const response = await fetch('/api/scoreboard', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ name: playerName, score: playerScore })
+        });
+        
+        const result = await response.json();
+        console.log("Score saved to database:", result);
+        
+        // Refresh the leaderboard immediately after saving
+        fetchLeaderboard(); 
+        
+    } catch (error) {
+        console.error("Error saving score:", error);
+    }
+}
+
+async function fetchLeaderboard() {
+    try {
+        const response = await fetch('/api/scoreboard');
+        const scores = await response.json();
+        
+        console.log("Top 10 Scores:", scores);
+        
+    } catch (error) {
+        console.error("Error fetching leaderboard:", error);
+    }
+}
+
+// INITIALIZATION
 bindPortfolioUi();
 
 if (canvas && ctx) {
     resetGame();
     bindGameControls();
     gameLoop();
+    
+    // FETCH LEADERBOARD ONCE WHEN THE PAGE LOADS
+    fetchLeaderboard();
 }
