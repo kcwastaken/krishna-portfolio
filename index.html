@@ -23,7 +23,10 @@
                 </div>
             </div>
 
-            <button id="skipIntro" class="skip-btn" type="button" aria-label="Skip intro">SKIP ▶</button>
+            <div class="top-nav-actions">
+                <button id="soundToggle" class="sound-toggle-btn" type="button" aria-label="Toggle retro 8-bit sound" title="Sound: ON">🔊</button>
+                <button id="skipIntro" class="skip-btn" type="button" aria-label="Skip intro">SKIP ▶</button>
+            </div>
 
             <div class="title-container">
                 <p class="player-badge">PLAYER 1 READY</p>
@@ -31,28 +34,52 @@
                 <h2 class="main-subtitle"><span id="typedRole">AI/ML Developer</span><span class="cursor-blink">|</span></h2>
 
                 <div class="arcade-controls">
-                    <button id="startButton" class="start-btn square-mech" type="button" aria-label="Coin slot">
-                        <div class="slot-container" id="dropZone">
-                            <div class="coin-slot-hole"></div>
+                    <!-- Retro Arcade Coin Door Bezel -->
+                    <div id="arcadeDoor" class="arcade-coin-door" role="button" tabindex="0" aria-label="Arcade Coin Door">
+                        <div class="rivet top-left"></div>
+                        <div class="rivet top-right"></div>
+                        
+                        <div id="startButton" class="coin-insert-panel">
+                            <div class="coin-bezel-header">
+                                <span class="arcade-price">25¢</span>
+                                <span class="arcade-subtext">1 PLAY</span>
+                            </div>
+                            <div class="slot-container" id="dropZone">
+                                <div class="coin-slot-hole"></div>
+                            </div>
+                            <div class="arcade-label">INSERT COIN</div>
                         </div>
-                    </button>
 
+                        <div class="coin-return-pocket" id="coinRejectBtn" title="Press to auto-insert coin">
+                            <span class="coin-return-button">PUSH</span>
+                        </div>
+                        
+                        <div class="rivet bottom-left"></div>
+                        <div class="rivet bottom-right"></div>
+                    </div>
+
+                    <!-- Interactive Treasure Chest with Hint Badge -->
                     <div class="chest-wrapper">
-                        <img src="chest-close.png" id="chestImage" class="chest-image" alt="Click to open treasure chest">
+                        <div class="chest-hint-badge" id="chestHint"><span>CLICK ME!</span></div>
+                        <img src="chest-close.png" id="chestImage" class="chest-image" alt="Click to open treasure chest" role="button" tabindex="0">
                         <div class="coin-pile hidden" id="coinPile">
-                            <img src="coin.png" class="pixel-coin draggable" alt="coin" draggable="false">
-                            <img src="coin.png" class="pixel-coin draggable" alt="coin" draggable="false">
-                            <img src="coin.png" class="pixel-coin draggable" alt="coin" draggable="false">
-                            <img src="coin.png" class="pixel-coin draggable" alt="coin" draggable="false">
+                            <img src="coin.png" class="pixel-coin draggable" alt="coin" draggable="false" title="Drag to insert">
+                            <img src="coin.png" class="pixel-coin draggable" alt="coin" draggable="false" title="Drag to insert">
+                            <img src="coin.png" class="pixel-coin draggable" alt="coin" draggable="false" title="Drag to insert">
+                            <img src="coin.png" class="pixel-coin draggable" alt="coin" draggable="false" title="Drag to insert">
                         </div>
                     </div>
                 </div>
 
-                <p class="insert-coin">OPEN CHEST → DRAG COIN → INSERT TO PLAY</p>
+                <div class="instruction-box">
+                    <p class="insert-coin" id="insertInstructions">OPEN CHEST → DRAG COIN → INSERT TO PLAY</p>
+                </div>
             </div>
 
-            <div class="hero-sprite" aria-hidden="true">
-                <div class="pixel-hero"></div>
+            <!-- Interactive Pixel Hero Easter Egg -->
+            <div class="hero-sprite" id="heroSprite" role="button" tabindex="0" aria-label="Pixel Hero — Click to jump!" title="Click me!">
+                <div class="hero-speech-bubble" id="heroBubble">CLICK ME! 👾</div>
+                <div class="pixel-hero" id="pixelHero"></div>
             </div>
         </div>
 
@@ -78,19 +105,58 @@
                 <!-- Hero -->
                 <header id="home" class="portfolio-hero reveal">
                     <div class="hero-text">
-                        <p class="eyebrow">LEVEL 21 • B.TECH IT @ MITS GWALIOR</p>
+                        <div class="hero-badge-row">
+                            <p class="eyebrow">LEVEL 21 • B.TECH IT @ MITS GWALIOR</p>
+                            <span class="rank-tag">AI/ML ENGINEER</span>
+                        </div>
                         <h1 class="title">Building Intelligence<br>That <span class="text-gradient">Actually Works</span></h1>
-                        <p class="hero-desc">I turn raw data into real-world AI systems — from 92% accurate medical imaging pipelines to real-time sign language recognition. Currently open to internships &amp; collaborations.</p>
+                        <p class="hero-desc">I engineer real-world machine learning systems and deep learning pipelines — from 92% accurate CNN medical imaging to real-time 30+ gesture sign language recognition with MediaPipe. Currently open to high-impact internships &amp; collaborative AI roles.</p>
                         <div class="hero-actions">
                             <a href="#quests" class="btn btn-primary">VIEW PROJECTS</a>
                             <a href="contact.html" class="btn btn-ghost">HIRE ME</a>
-                            <a href="game.html" class="btn btn-ghost">🎮 PLAY GAME</a>
+                            <button id="resumeBtn" class="btn btn-resume" type="button" aria-label="View Resume">📄 RESUME</button>
+                            <a href="game.html" class="btn btn-ghost nav-game-btn">🎮 PLAY GAME</a>
                         </div>
                     </div>
                     <div class="hero-visual">
-                        <div class="hero-frame">
-                            <img src="krishna.JPG" alt="Krishna Chaudhary" class="hero-photo">
-                            <div class="status-pill"><span class="status-dot"></span> AVAILABLE</div>
+                        <div class="player-card-hud" id="playerCardHud">
+                            <div class="card-bracket top-left"></div>
+                            <div class="card-bracket top-right"></div>
+                            <div class="card-bracket bottom-left"></div>
+                            <div class="card-bracket bottom-right"></div>
+                            
+                            <div class="hud-header">
+                                <span class="hud-id">PLAYER: KRISHNA CHAUDHARY</span>
+                                <span class="hud-ping">24ms • ONLINE</span>
+                            </div>
+
+                            <div class="hero-frame">
+                                <img src="krishna.JPG" alt="Krishna Chaudhary" class="hero-photo">
+                                <div class="scanline-overlay" aria-hidden="true"></div>
+                            </div>
+
+                            <div class="hud-status-row">
+                                <div class="status-pill"><span class="status-dot"></span> AVAILABLE FOR WORK</div>
+                            </div>
+
+                            <!-- RPG Character Stats HUD -->
+                            <div class="rpg-stats-box">
+                                <div class="rpg-stat-line">
+                                    <span class="rpg-label">HP</span>
+                                    <div class="rpg-bar hp"><div class="rpg-fill" style="width: 100%;"></div></div>
+                                    <span class="rpg-val">100/100</span>
+                                </div>
+                                <div class="rpg-stat-line">
+                                    <span class="rpg-label">MP</span>
+                                    <div class="rpg-bar mp"><div class="rpg-fill" style="width: 100%;"></div></div>
+                                    <span class="rpg-val">100/100</span>
+                                </div>
+                                <div class="rpg-stat-line">
+                                    <span class="rpg-label">EXP</span>
+                                    <div class="rpg-bar exp"><div class="rpg-fill" style="width: 85%;"></div></div>
+                                    <span class="rpg-val">8,450 / 10,000</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </header>
@@ -98,20 +164,28 @@
                 <!-- Stats HUD -->
                 <div class="stats-hud reveal">
                     <div class="stat-card">
+                        <div class="stat-icon">🚀</div>
                         <span class="stat-value" data-count="6" data-suffix="+">0</span>
                         <span class="stat-label">Projects Built</span>
+                        <span class="stat-sub">Production &amp; Research</span>
                     </div>
                     <div class="stat-card">
+                        <div class="stat-icon">🎯</div>
                         <span class="stat-value" data-count="92" data-suffix="%">0</span>
                         <span class="stat-label">Best Model Accuracy</span>
+                        <span class="stat-sub">Brain Tumor MRI CNN</span>
                     </div>
                     <div class="stat-card">
+                        <div class="stat-icon">🤟</div>
                         <span class="stat-value" data-count="30" data-suffix="+">0</span>
                         <span class="stat-label">ISL Gestures</span>
+                        <span class="stat-sub">Real-Time MediaPipe</span>
                     </div>
                     <div class="stat-card">
+                        <div class="stat-icon">👑</div>
                         <span class="stat-value" data-count="2">0</span>
                         <span class="stat-label">Leadership Roles</span>
+                        <span class="stat-sub">Secretary @ IETE Society</span>
                     </div>
                 </div>
 
@@ -119,154 +193,292 @@
                 <section id="lore" class="about-section reveal">
                     <h2 class="section-title"><span class="section-num">01</span> PLAYER LORE</h2>
                     <div class="about-container">
-                        <div class="profile-pic-box">
-                            <img src="krishna.JPG" alt="Krishna Chaudhary portrait" class="pixel-portrait">
+                        <!-- Retro Cyber Terminal Window -->
+                        <div class="terminal-log-box">
+                            <div class="terminal-bar">
+                                <span class="term-btn red"></span>
+                                <span class="term-btn yellow"></span>
+                                <span class="term-btn green"></span>
+                                <span class="term-title">krishna@mits:~# bio.sh</span>
+                            </div>
+                            <div class="terminal-content">
+                                <p class="term-line"><span class="prompt">$</span> <span class="cmd">whoami</span></p>
+                                <p class="term-out highlight-cyan">Krishna Chaudhary - AI/ML Engineer &amp; Full-Stack Developer</p>
+                                
+                                <p class="term-line"><span class="prompt">$</span> <span class="cmd">status --current</span></p>
+                                <p class="term-out highlight-green">• Active: 7th Sem @ MITS Gwalior</p>
+                                <p class="term-out">• Spec: Artificial Intelligence, Computer Vision, Shopify/Liquid Dev</p>
+                                
+                                <p class="term-line"><span class="prompt">$</span> <span class="cmd">cat interests.json</span></p>
+                                <p class="term-out highlight-yellow">[ "Medical AI", "E-commerce Architecture", "Tech Community Leadership" ]</p>
+                                
+                                <p class="term-line"><span class="prompt">$</span> <span class="cmd">ping opportunity</span></p>
+                                <p class="term-out highlight-purple">64 bytes from next-role: icmp_seq=1 ttl=64 time=0.2ms [READY]</p>
+                                
+                                <p class="term-line"><span class="prompt">$</span> <span class="term-cursor">_</span></p>
+                            </div>
                             <div class="profile-tags">
                                 <span class="tag">Python</span>
                                 <span class="tag">TensorFlow</span>
                                 <span class="tag">OpenCV</span>
-                                <span class="tag">FastAPI</span>
+                                <span class="tag">Shopify Liquid</span>
+                                <span class="tag">MediaPipe</span>
+                                <span class="tag">SEO</span>
                             </div>
                         </div>
                         <div class="story-box">
-                            <p>I'm a B.Tech IT student at <strong>MITS Gwalior</strong>, specializing in Artificial Intelligence, Deep Learning, and Computer Vision. I don't just study ML — I ship it.</p>
-                            <p>My flagship work includes a <strong>CNN-based Brain Tumor Detection</strong> pipeline hitting 92% accuracy, and a <strong>real-time Indian Sign Language</strong> recognition system using Spatiotemporal Neural Networks with MediaPipe — recognizing 30+ dynamic gestures at 95% accuracy.</p>
-                            <p>Beyond code, I lead as <strong>Management Head of IETE Society</strong>, manage operations at Heka Fashion, and build e-commerce solutions on Shopify. I believe the best engineers are builders who understand both tech and people.</p>
+                            <p>I'm a 7th-semester Information Technology undergraduate at <strong>MITS Gwalior</strong>, specializing in Artificial Intelligence and Machine Learning. My core drive is turning complex research into deployed, production-ready systems that solve critical real-world problems.</p>
+                            <p>My flagship AI work includes an end-to-end <strong>Brain Tumor MRI Classification Pipeline</strong> and <strong>SignSpeak</strong>, a real-time Indian Sign Language (ISL) recognition engine powered by MediaPipe and neural networks for seamless two-way sign-to-speech translation.</p>
+                            <p>Beyond model weights and epochs, I build scalable web experiences. During my internship at <strong>Heka Fashion</strong>, I architected and developed their e-commerce platform from the ground up using custom Shopify Liquid code, while also driving their digital growth through SEO optimization and Meta Ads campaigns. I've also expanded my freelance portfolio by developing the official website for <strong>Blu J Internationals</strong>.</p>
+                            <p>I believe the best engineers bridge deep technical skills with operational leadership. As the <strong>Secretary of the IETE Society</strong>, I lead the charge in cultivating our campus tech culture—coordinating and hosting technical events, seminars, and competitive workshops where students can collaborate, compete, and learn together.</p>
+                            <div class="lore-highlights">
+                                <div class="lore-badge">🎓 7th Sem @ MITS Gwalior</div>
+                                <div class="lore-badge">🌐 Shopify &amp; Liquid Dev</div>
+                                <div class="lore-badge">🧠 AI/ML Specialist</div>
+                                <div class="lore-badge">🏆 Secretary @ IETE Society</div>
+                            </div>
                         </div>
                     </div>
                 </section>
 
                 <!-- Skills -->
                 <section id="skills" class="skills-section reveal">
-                    <h2 class="section-title"><span class="section-num">02</span> LOADOUT</h2>
+                    <h2 class="section-title"><span class="section-num">02</span> LOADOUT &amp; ARSENAL</h2>
+                    <p class="section-desc">Hover over any skill module to inspect battlefield experience and applications.</p>
                     <div class="skills-grid">
                         <div class="skill-category">
-                            <h3>🧠 AI / ML</h3>
-                            <div class="skill-item"><span>TensorFlow / Keras</span><div class="skill-bar"><div class="skill-fill" data-level="90"></div></div></div>
-                            <div class="skill-item"><span>Computer Vision</span><div class="skill-bar"><div class="skill-fill" data-level="88"></div></div></div>
-                            <div class="skill-item"><span>Deep Learning</span><div class="skill-bar"><div class="skill-fill" data-level="85"></div></div></div>
-                            <div class="skill-item"><span>Data Mining</span><div class="skill-bar"><div class="skill-fill" data-level="80"></div></div></div>
+                            <div class="category-header">
+                                <span class="cat-icon">🧠</span>
+                                <h3>AI &amp; Deep Learning</h3>
+                            </div>
+                            <div class="skill-badges-container">
+                                <div class="skill-chip" data-tooltip="Trained custom CNNs for 92% MRI tumor classification &amp; gesture nets">
+                                    <span class="chip-name">TensorFlow / Keras</span>
+                                    <span class="chip-level master">PRO</span>
+                                </div>
+                                <div class="skill-chip" data-tooltip="Spatial-temporal neural networks &amp; transfer learning architectures">
+                                    <span class="chip-name">Deep Learning</span>
+                                    <span class="chip-level master">PRO</span>
+                                </div>
+                                <div class="skill-chip" data-tooltip="Feature engineering, classification, clustering &amp; tabular optimization">
+                                    <span class="chip-name">Data Mining &amp; ML</span>
+                                    <span class="chip-level adept">EXP</span>
+                                </div>
+                                <div class="skill-chip" data-tooltip="Building and fine-tuning neural networks for inference pipelines">
+                                    <span class="chip-name">PyTorch</span>
+                                    <span class="chip-level adept">EXP</span>
+                                </div>
+                            </div>
                         </div>
+
                         <div class="skill-category">
-                            <h3>⚙️ Engineering</h3>
-                            <div class="skill-item"><span>Python</span><div class="skill-bar"><div class="skill-fill" data-level="92"></div></div></div>
-                            <div class="skill-item"><span>FastAPI</span><div class="skill-bar"><div class="skill-fill" data-level="78"></div></div></div>
-                            <div class="skill-item"><span>OpenCV / MediaPipe</span><div class="skill-bar"><div class="skill-fill" data-level="86"></div></div></div>
-                            <div class="skill-item"><span>Web Dev (HTML/CSS/JS)</span><div class="skill-bar"><div class="skill-fill" data-level="75"></div></div></div>
+                            <div class="category-header">
+                                <span class="cat-icon">👁️</span>
+                                <h3>Computer Vision</h3>
+                            </div>
+                            <div class="skill-badges-container">
+                                <div class="skill-chip" data-tooltip="Image preprocessing, morphology, contour analysis, video streaming">
+                                    <span class="chip-name">OpenCV</span>
+                                    <span class="chip-level master">PRO</span>
+                                </div>
+                                <div class="skill-chip" data-tooltip="21-point hand landmark extraction for real-time 30+ gesture ISL system">
+                                    <span class="chip-name">MediaPipe</span>
+                                    <span class="chip-level master">PRO</span>
+                                </div>
+                                <div class="skill-chip" data-tooltip="Temporal sequence modeling &amp; spatial feature extraction for gestures">
+                                    <span class="chip-name">Spatiotemporal NNs</span>
+                                    <span class="chip-level master">PRO</span>
+                                </div>
+                                <div class="skill-chip" data-tooltip="Brain MRI boundary segmentation and tumor region localization">
+                                    <span class="chip-name">Medical Imaging</span>
+                                    <span class="chip-level adept">EXP</span>
+                                </div>
+                            </div>
                         </div>
+
                         <div class="skill-category">
-                            <h3>🛠️ Tools &amp; Ops</h3>
-                            <div class="skill-item"><span>Git / GitHub</span><div class="skill-bar"><div class="skill-fill" data-level="82"></div></div></div>
-                            <div class="skill-item"><span>Pandas / NumPy</span><div class="skill-bar"><div class="skill-fill" data-level="85"></div></div></div>
-                            <div class="skill-item"><span>Scrapy</span><div class="skill-bar"><div class="skill-fill" data-level="75"></div></div></div>
-                            <div class="skill-item"><span>Shopify / E-commerce</span><div class="skill-bar"><div class="skill-fill" data-level="70"></div></div></div>
+                            <div class="category-header">
+                                <span class="cat-icon">⚙️</span>
+                                <h3>Software &amp; Web Ops</h3>
+                            </div>
+                            <div class="skill-badges-container">
+                                <div class="skill-chip" data-tooltip="Core language for AI, data scripts, backend services &amp; automation">
+                                    <span class="chip-name">Python</span>
+                                    <span class="chip-level master">PRO</span>
+                                </div>
+                                <div class="skill-chip" data-tooltip="Asynchronous REST APIs for high-throughput model inference">
+                                    <span class="chip-name">FastAPI</span>
+                                    <span class="chip-level adept">EXP</span>
+                                </div>
+                                <div class="skill-chip" data-tooltip="Modern responsive interfaces, canvas animations &amp; game loops">
+                                    <span class="chip-name">HTML5 / CSS3 / JS</span>
+                                    <span class="chip-level adept">EXP</span>
+                                </div>
+                                <div class="skill-chip" data-tooltip="Version control, branching strategies, collaborative workflows">
+                                    <span class="chip-name">Git &amp; GitHub</span>
+                                    <span class="chip-level master">PRO</span>
+                                </div>
+                                <div class="skill-chip" data-tooltip="Large-scale structured data extraction pipelines &amp; web crawlers">
+                                    <span class="chip-name">Scrapy</span>
+                                    <span class="chip-level adept">EXP</span>
+                                </div>
+                                <div class="skill-chip" data-tooltip="Theme development, Liquid templating &amp; e-commerce operations">
+                                    <span class="chip-name">Shopify</span>
+                                    <span class="chip-level adept">EXP</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </section>
 
                 <!-- Projects -->
                 <section id="quests" class="quests-section reveal">
-                    <h2 class="section-title"><span class="section-num">03</span> ACTIVE QUESTS</h2>
-                    <p class="section-desc">Flip a card to inspect the mission briefing.</p>
-                    <div class="card-container">
-                        <div class="quest-card" tabindex="0">
+                    <div class="quests-header">
+                        <div>
+                            <h2 class="section-title"><span class="section-num">03</span> ACTIVE QUESTS</h2>
+                            <p class="section-desc">Mission dossiers: flip or tap a card to inspect tech specs, datasets, and deliverables.</p>
+                        </div>
+                        <!-- Category Filter Tabs -->
+                        <div class="quest-filter-tabs" id="questFilters">
+                            <button class="filter-tab active" data-filter="all" type="button">ALL (5)</button>
+                            <button class="filter-tab" data-filter="ai" type="button">AI &amp; ML</button>
+                            <button class="filter-tab" data-filter="cv" type="button">COMPUTER VISION</button>
+                            <button class="filter-tab" data-filter="web" type="button">WEB &amp; ECOM</button>
+                        </div>
+                    </div>
+
+                    <div class="card-container" id="questCardContainer">
+                        <!-- Brain Tumor Card -->
+                        <div class="quest-card" data-category="ai" tabindex="0">
                             <div class="card-inner">
                                 <div class="card-front">
-                                    <span class="card-badge">ML</span>
+                                    <div class="card-hud-strip">
+                                        <span class="card-badge">ML • 92% ACC</span>
+                                        <span class="hud-status-mini">VERIFIED</span>
+                                    </div>
                                     <h3>Brain Tumor Detection</h3>
                                     <div class="icon">🧠</div>
-                                    <p class="hover-text">HOVER TO INSPECT</p>
+                                    <p class="card-sub-metric">Deep Learning MRI Classifier</p>
+                                    <p class="hover-text">HOVER / TAP TO INSPECT</p>
                                 </div>
                                 <div class="card-back">
+                                    <span class="card-badge back-badge">CNN PIPELINE</span>
                                     <h3>Brain Tumor Detection</h3>
-                                    <p>92% classification accuracy on MRI scans using custom CNN architecture.</p>
-                                    <p>Tech: TensorFlow, OpenCV, NumPy</p>
-                                    <p>Reduced data loading bottlenecks by 25%.</p>
+                                    <p>92% classification accuracy on brain MRI scans with automated tumor boundary localization using custom CNN architecture.</p>
+                                    <div class="card-tech-pills">
+                                        <span>TensorFlow</span><span>OpenCV</span><span>NumPy</span>
+                                    </div>
+                                    <div class="card-action-row">
+                                        <a href="brain-tumor.html" class="card-link">▶ VIEW CASE STUDY</a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="quest-card" tabindex="0">
+                        <!-- Real-Time ISL Card -->
+                        <div class="quest-card" data-category="cv" tabindex="0">
                             <div class="card-inner">
                                 <div class="card-front">
-                                    <span class="card-badge">CV</span>
+                                    <div class="card-hud-strip">
+                                        <span class="card-badge">CV • 95% ACC</span>
+                                        <span class="hud-status-mini">REAL-TIME</span>
+                                    </div>
                                     <h3>Real-Time ISL</h3>
                                     <div class="icon">✋</div>
-                                    <p class="hover-text">HOVER TO INSPECT</p>
+                                    <p class="card-sub-metric">30+ Dynamic Indian Signs</p>
+                                    <p class="hover-text">HOVER / TAP TO INSPECT</p>
                                 </div>
                                 <div class="card-back">
+                                    <span class="card-badge back-badge">MEDIA PIPE + ST-NN</span>
                                     <h3>Indian Sign Language</h3>
-                                    <p>95% gesture accuracy across 30+ dynamic signs in real time.</p>
-                                    <p>Tech: FastAPI, MediaPipe, ST-NNs</p>
-                                    <p>Built end-to-end inference pipeline.</p>
+                                    <p>21-point MediaPipe hand landmark tracking + Spatiotemporal Neural Networks delivering sub-50ms inference across 30+ gestures.</p>
+                                    <div class="card-tech-pills">
+                                        <span>FastAPI</span><span>MediaPipe</span><span>ST-NNs</span>
+                                    </div>
+                                    <div class="card-action-row">
+                                        <a href="isl.html" class="card-link">▶ VIEW CASE STUDY</a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="quest-card" tabindex="0">
+                        <!-- Shopify E-Commerce Card -->
+                        <div class="quest-card" data-category="web" tabindex="0">
                             <div class="card-inner">
                                 <div class="card-front">
-                                    <span class="card-badge">DATA</span>
-                                    <h3>IPR Data Mining</h3>
-                                    <div class="icon">📊</div>
-                                    <p class="hover-text">HOVER TO INSPECT</p>
-                                </div>
-                                <div class="card-back">
-                                    <h3>IPR Research Pipeline</h3>
-                                    <p>Large-scale web scraping for intellectual property research.</p>
-                                    <p>Tech: Python, Scrapy, Pandas</p>
-                                    <p>Automated extraction &amp; cleaning at scale.</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="quest-card" tabindex="0">
-                            <div class="card-inner">
-                                <div class="card-front">
-                                    <span class="card-badge">WEB</span>
-                                    <h3>Arcade Portfolio</h3>
-                                    <div class="icon">🕹️</div>
-                                    <p class="hover-text">HOVER TO INSPECT</p>
-                                </div>
-                                <div class="card-back">
-                                    <h3>This Website</h3>
-                                    <p>Retro arcade-themed portfolio with drag-and-drop coin mechanic.</p>
-                                    <p>Tech: HTML, CSS, Vanilla JS</p>
-                                    <p>Includes playable Easter egg runner game.</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="quest-card" tabindex="0">
-                            <div class="card-inner">
-                                <div class="card-front">
-                                    <span class="card-badge">ECOM</span>
-                                    <h3>Shopify Store</h3>
+                                    <div class="card-hud-strip">
+                                        <span class="card-badge">ECOM • OPS</span>
+                                        <span class="hud-status-mini">LIVE</span>
+                                    </div>
+                                    <h3>Shopify Architecture</h3>
                                     <div class="icon">🛍️</div>
-                                    <p class="hover-text">HOVER TO INSPECT</p>
+                                    <p class="card-sub-metric">Heka Fashion &amp; Brand Systems</p>
+                                    <p class="hover-text">HOVER / TAP TO INSPECT</p>
                                 </div>
                                 <div class="card-back">
+                                    <span class="card-badge back-badge">STOREFRONT</span>
                                     <h3>E-Commerce Solutions</h3>
-                                    <p>Full Shopify store setup, theme customization &amp; ops.</p>
-                                    <p>Tech: Shopify, Liquid, HTML/CSS</p>
-                                    <p>Conversion-focused product pages.</p>
+                                    <p>Full storefront setup, custom Liquid theme engineering, payment gateways, and operational logistics for apparel brand.</p>
+                                    <div class="card-tech-pills">
+                                        <span>Shopify</span><span>Liquid</span><span>CSS3</span>
+                                    </div>
+                                    <div class="card-action-row">
+                                        <a href="shopify.html" class="card-link">▶ VIEW CASE STUDY</a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="quest-card" tabindex="0">
+                        <!-- Blu J International -->
+                        <div class="quest-card" data-category="web" tabindex="0">
                             <div class="card-inner">
                                 <div class="card-front">
-                                    <span class="card-badge">GAME</span>
-                                    <h3>Easter Egg Run</h3>
-                                    <div class="icon">🏃</div>
-                                    <p class="hover-text">HOVER TO INSPECT</p>
+                                    <div class="card-hud-strip">
+                                        <span class="card-badge">WEB • CLIENT</span>
+                                        <span class="hud-status-mini">DEPLOYED</span>
+                                    </div>
+                                    <h3>Blu J International</h3>
+                                    <div class="icon">🌐</div>
+                                    <p class="card-sub-metric">Corporate Brand Presence</p>
+                                    <p class="hover-text">HOVER / TAP TO INSPECT</p>
                                 </div>
                                 <div class="card-back">
-                                    <h3>Canvas Runner Game</h3>
-                                    <p>Side-scrolling obstacle dodge game built in pure JS.</p>
-                                    <p>Tech: HTML5 Canvas, JS</p>
-                                    <a href="game.html" class="card-link">▶ PLAY NOW</a>
+                                    <span class="card-badge back-badge">GLOBAL CORP</span>
+                                    <h3>Blu J International</h3>
+                                    <p>High-conversion corporate web portal designed and deployed for an international import/export client.</p>
+                                    <div class="card-tech-pills">
+                                        <span>Responsive Web</span><span>SEO</span><span>UI/UX</span>
+                                    </div>
+                                    <div class="card-action-row">
+                                        <a href="blu-j.html" class="card-link">▶ VIEW CASE STUDY</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Nexus Flow -->
+                        <div class="quest-card" data-category="web" tabindex="0">
+                            <div class="card-inner">
+                                <div class="card-front">
+                                    <div class="card-hud-strip">
+                                        <span class="card-badge">UI/UX • WEB</span>
+                                        <span class="hud-status-mini">INTERACTIVE</span>
+                                    </div>
+                                    <h3>Nexus Flow</h3>
+                                    <div class="icon">⚡</div>
+                                    <p class="card-sub-metric">High-Velocity Digital App</p>
+                                    <p class="hover-text">HOVER / TAP TO INSPECT</p>
+                                </div>
+                                <div class="card-back">
+                                    <span class="card-badge back-badge">APP SYSTEM</span>
+                                    <h3>Nexus Flow</h3>
+                                    <p>Performance-driven interactive web application focusing on fluid transitions, client routing, and low-latency interaction.</p>
+                                    <div class="card-tech-pills">
+                                        <span>JavaScript</span><span>Animation</span><span>CSS Grid</span>
+                                    </div>
+                                    <div class="card-action-row">
+                                        <a href="nexus-flow.html" class="card-link">▶ VIEW CASE STUDY</a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -280,33 +492,33 @@
                         <div class="timeline-item">
                             <div class="timeline-marker"></div>
                             <div class="xp-box">
-                                <span class="timeline-date">2024 — Present</span>
+                                <span class="timeline-date">2024 — PRESENT</span>
                                 <h3>Management Head @ IETE Society</h3>
-                                <p>Leading technical operations, event coordination, and team management for one of MITS's largest technical societies.</p>
+                                <p>Leading technical operations, organizing cross-campus hackathons/workshops, and coordinating teams for one of MITS's premier technical chapters.</p>
                                 <div class="xp-tags">
-                                    <span>Leadership</span><span>Event Ops</span><span>Team Coordination</span>
+                                    <span>Leadership</span><span>Tech Events</span><span>Team Operations</span>
                                 </div>
                             </div>
                         </div>
                         <div class="timeline-item">
                             <div class="timeline-marker"></div>
                             <div class="xp-box">
-                                <span class="timeline-date">2024 — Present</span>
+                                <span class="timeline-date">2024 — PRESENT</span>
                                 <h3>Management Trainee @ Heka Fashion</h3>
-                                <p>Driving operations, brand strategy, and growth initiatives for a fashion e-commerce brand.</p>
+                                <p>Managing e-commerce brand operations, inventory systems, customer acquisition funnels, and store performance optimizations.</p>
                                 <div class="xp-tags">
-                                    <span>Operations</span><span>Strategy</span><span>E-commerce</span>
+                                    <span>E-commerce</span><span>Operations Strategy</span><span>Shopify</span>
                                 </div>
                             </div>
                         </div>
                         <div class="timeline-item">
                             <div class="timeline-marker"></div>
                             <div class="xp-box">
-                                <span class="timeline-date">2022 — Present</span>
+                                <span class="timeline-date">2022 — PRESENT</span>
                                 <h3>B.Tech IT @ MITS Gwalior</h3>
-                                <p>Pursuing Information Technology with focus on AI, ML, and software engineering. Active in technical societies and hands-on project work.</p>
+                                <p>Specializing in Machine Learning, Deep Neural Networks, and Computer Vision. CGPA-backed coursework paired with production project shipping.</p>
                                 <div class="xp-tags">
-                                    <span>AI/ML</span><span>Computer Vision</span><span>Data Science</span>
+                                    <span>AI / ML</span><span>Computer Vision</span><span>Data Structures</span>
                                 </div>
                             </div>
                         </div>
@@ -317,11 +529,11 @@
                 <section class="cta-section reveal">
                     <div class="cta-box">
                         <h2>Ready to Team Up?</h2>
-                        <p>Whether it's an AI project, internship, or just a chat about tech — I'm always game.</p>
+                        <p>Whether you have an ambitious AI project, an internship opening, or want to discuss machine learning systems — I'm always game.</p>
                         <div class="hero-actions">
                             <a href="contact.html" class="btn btn-primary">CONTACT ME</a>
-                            <a href="https://github.com" class="btn btn-ghost" target="_blank" rel="noopener">GITHUB</a>
-                            <a href="https://linkedin.com" class="btn btn-ghost" target="_blank" rel="noopener">LINKEDIN</a>
+                            <a href="https://github.com/kcwastaken" class="btn btn-ghost" target="_blank" rel="noopener">GITHUB ↗</a>
+                            <a href="https://linkedin.com" class="btn btn-ghost" target="_blank" rel="noopener">LINKEDIN ↗</a>
                         </div>
                     </div>
                 </section>
@@ -330,12 +542,70 @@
             <footer class="site-footer">
                 <p>© 2026 Krishna Chaudhary — Built with ☕ and pixel art vibes</p>
                 <div class="footer-links">
-                    <a href="index.html">Home</a>
+                    <a href="#home">Home</a>
                     <a href="game.html">Easter Egg</a>
                     <a href="contact.html">Contact</a>
+                    <span class="konami-hint" title="Try: ↑ ↑ ↓ ↓ ← → ← → B A">🎮 Konami Code Ready</span>
                 </div>
             </footer>
         </section>
+
+        <!-- ═══ RESUME MODAL ═══ -->
+        <div id="resumeModal" class="resume-modal hidden" role="dialog" aria-modal="true" aria-labelledby="resumeTitle">
+            <div class="resume-modal-backdrop" id="resumeBackdrop"></div>
+            <div class="resume-modal-window">
+                <div class="resume-header">
+                    <div class="resume-title-group">
+                        <span class="resume-tag">OFFICIAL RESUME</span>
+                        <h2 id="resumeTitle">Krishna Chaudhary</h2>
+                        <p class="resume-role">AI/ML Engineer &amp; Full-Stack Developer</p>
+                    </div>
+                    <div class="resume-top-actions">
+                        <a href="resume.pdf" download="Krishna_Chaudhary_Resume.pdf" class="btn btn-primary btn-sm">📥 DOWNLOAD</a>
+                        <a href="resume.pdf" target="_blank" rel="noopener" class="btn btn-ghost btn-sm">↗ OPEN IN TAB</a>
+                        <button id="closeResumeBtn" class="close-modal-btn" type="button" aria-label="Close modal">✕</button>
+                    </div>
+                </div>
+
+                <div class="resume-doc-viewer" id="resumeDocViewer">
+                    <div class="resume-viewer-toolbar">
+                        <div class="toolbar-info">
+                            <span class="doc-badge">DOCUMENT PREVIEW</span>
+                            <span class="doc-page-count">PAGE 1 / 1</span>
+                        </div>
+                        <div class="toolbar-zoom">
+                            <button class="zoom-btn" id="resumeZoomOut" title="Zoom Out" type="button">−</button>
+                            <span class="zoom-display" id="resumeZoomVal">100%</span>
+                            <button class="zoom-btn" id="resumeZoomIn" title="Zoom In" type="button">+</button>
+                            <button class="zoom-btn zoom-fit-btn" id="resumeZoomFit" title="Fit to window" type="button">FIT</button>
+                        </div>
+                    </div>
+                    <div class="resume-canvas-scroll" id="resumeCanvasScroll">
+                        <div class="resume-sheet-shadow" id="resumeSheetWrap">
+                            <img src="resume-page-1.png" alt="Krishna Chaudhary Official Resume" class="resume-render-img" id="resumeRenderImg">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="resume-footer-actions">
+                    <a href="resume.pdf" download="Krishna_Chaudhary_Resume.pdf" class="btn btn-primary">📥 DOWNLOAD RESUME (PDF)</a>
+                    <a href="contact.html" class="btn btn-ghost">HIRE KRISHNA</a>
+                    <button class="btn btn-ghost" type="button" id="resumeCloseFooter">CLOSE</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ KONAMI CODE GOD-MODE BANNER ═══ -->
+        <div id="godModeBanner" class="god-mode-banner hidden">
+            <div class="banner-inner">
+                <span class="banner-sparkle">✨</span>
+                <div class="banner-text">
+                    <span class="banner-title">★ CHEAT CODE UNLOCKED: WILD POKÉMON INVASION! ★</span>
+                    <span class="banner-sub">14 Wild Pokémon shattered across your screen — click or drag them!</span>
+                </div>
+                <button class="banner-close-btn" id="dismissBannerBtn" type="button" title="Dismiss Pokémon">✕ DISMISS</button>
+            </div>
+        </div>
     </main>
 
     <script src="main.js"></script>
