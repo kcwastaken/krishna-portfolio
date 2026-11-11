@@ -289,53 +289,92 @@ function insertCoinAndTransition(coin) {
     if (hasInserted) return;
     hasInserted = true;
 
-    arcadeAudio.playCoinInsert();
+    // Target the exact center of the coin slot hole
+    const slotHole = document.querySelector('.coin-slot-hole');
+    const holeRect = slotHole ? slotHole.getBoundingClientRect() : (slot ? slot.getBoundingClientRect() : null);
+
+    const coinRect = coin.getBoundingClientRect();
+    const currentCenterX = coinRect.left + coinRect.width / 2;
+    const currentCenterY = coinRect.top + coinRect.height / 2;
+
+    const targetCenterX = holeRect ? (holeRect.left + holeRect.width / 2) : currentCenterX;
+    const targetCenterY = holeRect ? (holeRect.top + holeRect.height / 2) : currentCenterY;
 
     // Lock coin inside slot visually
     coin.classList.remove('dragging');
     coin.classList.add('inserted');
-    if (slot) {
-        slot.appendChild(coin);
-        coin.style.position = 'absolute';
-        coin.style.left = '50%';
-        coin.style.top = '-20px';
-        coin.style.transform = 'translateX(-50%)';
-        coin.style.transition = 'top 0.35s ease-in, transform 0.35s, opacity 0.3s';
 
-        // Flash burst on slot
-        const burst = document.createElement('div');
-        burst.className = 'slot-flash-burst';
-        slot.appendChild(burst);
-        setTimeout(() => burst.remove(), 450);
+    // Keep coin in fixed coordinate space anchored to slot hole center
+    coin.style.position = 'fixed';
+    coin.style.left = targetCenterX + 'px';
+    coin.style.top = targetCenterY + 'px';
+    coin.style.width = '30px';
+    coin.style.height = '30px';
+    coin.style.margin = '0';
+    coin.style.zIndex = '10001';
+    coin.style.pointerEvents = 'none';
 
-        setTimeout(() => {
-            coin.style.top = '12px';
-            coin.style.transform = 'translateX(-50%) scaleX(0.1)';
-            coin.style.opacity = '0';
-        }, 30);
-    }
+    // Zero jump from release position
+    const startDx = currentCenterX - targetCenterX;
+    const startDy = currentCenterY - targetCenterY;
+    coin.style.transition = 'none';
+    coin.style.transform = `translate(calc(-50% + ${startDx}px), calc(-50% + ${startDy}px)) rotate(0deg) scale(1)`;
 
     if (slot) slot.classList.add('highlight');
+    const startButton = document.getElementById('startButton');
+    if (startButton) startButton.classList.add('panel-highlight');
     if (arcadeDoor) arcadeDoor.classList.add('drag-over');
 
-    // Hero victory jump
-    if (pixelHero) {
-        pixelHero.classList.remove('jump');
-        void pixelHero.offsetWidth;
-        pixelHero.classList.add('victory');
-    }
+    // Force reflow
+    void coin.offsetWidth;
 
-    // Player Badge Update
-    if (playerBadge) {
-        playerBadge.textContent = '★ PLAYER 1 READY ★';
-        playerBadge.classList.add('game-started');
-    }
+    // Phase 1: Glide smoothly directly to slot aperture and rotate 3D into vertical slit profile
+    requestAnimationFrame(() => {
+        coin.style.transition = 'transform 0.22s cubic-bezier(0.2, 0.85, 0.35, 1), filter 0.22s ease';
+        coin.style.transform = 'translate(-50%, -50%) perspective(350px) rotateY(74deg) scale(0.72)';
+        coin.style.filter = 'drop-shadow(0 0 12px rgba(255, 235, 59, 0.95)) brightness(1.25)';
+    });
 
-    if (insertInstructions) {
-        insertInstructions.textContent = '★ COIN ACCEPTED! LOADING PORTFOLIO... ★';
-    }
+    // Phase 2: Slide directly inside the slot slit, disappearing into the cabinet
+    setTimeout(() => {
+        coin.style.transition = 'transform 0.18s cubic-bezier(0.4, 0, 1, 1), opacity 0.16s ease-in, filter 0.18s ease';
+        coin.style.transform = 'translate(-50%, -50%) perspective(350px) rotateY(86deg) scale(0.12) translateZ(-50px)';
+        coin.style.opacity = '0';
+        coin.style.filter = 'drop-shadow(0 0 4px #000) brightness(0.2)';
 
-    // Warp Stars & CRT Flash
+        // Audio & Visual flare at slot hole
+        arcadeAudio.playCoinInsert();
+
+        if (slotHole) {
+            slotHole.classList.add('coin-accepted');
+        }
+
+        if (slot) {
+            const burst = document.createElement('div');
+            burst.className = 'slot-flash-burst';
+            slot.appendChild(burst);
+            setTimeout(() => burst.remove(), 500);
+        }
+
+        // Hero victory jump
+        if (pixelHero) {
+            pixelHero.classList.remove('jump');
+            void pixelHero.offsetWidth;
+            pixelHero.classList.add('victory');
+        }
+
+        // Player Badge Update
+        if (playerBadge) {
+            playerBadge.textContent = '★ PLAYER 1 READY ★';
+            playerBadge.classList.add('game-started');
+        }
+
+        if (insertInstructions) {
+            insertInstructions.textContent = '★ COIN ACCEPTED! LOADING PORTFOLIO... ★';
+        }
+    }, 220);
+
+    // Phase 3: Warp Stars & CRT Flash
     setTimeout(() => {
         arcadeAudio.playGameStart();
         const starsLayer = document.querySelector('.stars-layer');
@@ -347,10 +386,13 @@ function insertCoinAndTransition(coin) {
         crtFlash.className = 'crt-flash-overlay';
         document.body.appendChild(crtFlash);
         setTimeout(() => crtFlash.remove(), 400);
-    }, 150);
+    }, 420);
 
-    // Reveal main page
-    setTimeout(enterPortfolio, 550);
+    // Phase 4: Clean up coin and reveal portfolio
+    setTimeout(() => {
+        coin.remove();
+        enterPortfolio();
+    }, 780);
 }
 
 /* ── Pure Drag & Drop (Zero Drift, Locked to Mouse) ── */
@@ -364,6 +406,8 @@ const resetCoin = () => {
     currentCoin.style.margin = '';
     currentCoin.style.transition = '';
     if (slot) slot.classList.remove('highlight');
+    const startButton = document.getElementById('startButton');
+    if (startButton) startButton.classList.remove('panel-highlight');
     if (arcadeDoor) arcadeDoor.classList.remove('drag-over');
     currentCoin = null;
 };
@@ -403,23 +447,25 @@ const drag = (e) => {
     currentCoin.style.left = coinLeft + 'px';
     currentCoin.style.top = coinTop + 'px';
 
-    const doorEl = arcadeDoor || slot;
-    if (doorEl) {
-        const doorRect = doorEl.getBoundingClientRect();
+    const startButton = document.getElementById('startButton');
+    const targetEl = startButton || slot || arcadeDoor;
+    if (targetEl) {
+        const targetRect = targetEl.getBoundingClientRect();
         const coinW = currentCoin.offsetWidth || 30;
         const coinH = currentCoin.offsetHeight || 30;
         const coinCenterX = coinLeft + coinW / 2;
         const coinCenterY = coinTop + coinH / 2;
 
-        const overDoor = (
-            coinCenterX >= doorRect.left - 20 &&
-            coinCenterX <= doorRect.right + 20 &&
-            coinCenterY >= doorRect.top - 20 &&
-            coinCenterY <= doorRect.bottom + 20
+        const overSlot = (
+            coinCenterX >= targetRect.left - 15 &&
+            coinCenterX <= targetRect.right + 15 &&
+            coinCenterY >= targetRect.top - 15 &&
+            coinCenterY <= targetRect.bottom + 15
         );
 
-        if (slot) slot.classList.toggle('highlight', overDoor);
-        if (arcadeDoor) arcadeDoor.classList.toggle('drag-over', overDoor);
+        if (slot) slot.classList.toggle('highlight', overSlot);
+        if (startButton) startButton.classList.toggle('panel-highlight', overSlot);
+        if (arcadeDoor) arcadeDoor.classList.toggle('drag-over', overSlot);
     }
 };
 
@@ -430,18 +476,19 @@ const stopDrag = (e) => {
     const clientX = e.type.includes('mouse') ? (e.clientX || 0) : (e.changedTouches ? e.changedTouches[0].clientX : 0);
     const clientY = e.type.includes('mouse') ? (e.clientY || 0) : (e.changedTouches ? e.changedTouches[0].clientY : 0);
 
-    const doorEl = arcadeDoor || slot;
-    const doorRect = doorEl ? doorEl.getBoundingClientRect() : null;
+    const startButton = document.getElementById('startButton');
+    const targetEl = startButton || slot || arcadeDoor;
+    const targetRect = targetEl ? targetEl.getBoundingClientRect() : null;
     const coinRect = currentCoin.getBoundingClientRect();
 
     const coinCenterX = coinRect.left + coinRect.width / 2;
     const coinCenterY = coinRect.top + coinRect.height / 2;
 
-    const droppedOnTarget = doorRect && (
-        (coinCenterX >= doorRect.left - 25 && coinCenterX <= doorRect.right + 25 &&
-         coinCenterY >= doorRect.top - 25 && coinCenterY <= doorRect.bottom + 25) ||
-        (clientX >= doorRect.left - 25 && clientX <= doorRect.right + 25 &&
-         clientY >= doorRect.top - 25 && clientY <= doorRect.bottom + 25)
+    const droppedOnTarget = targetRect && (
+        (coinCenterX >= targetRect.left - 15 && coinCenterX <= targetRect.right + 15 &&
+         coinCenterY >= targetRect.top - 15 && coinCenterY <= targetRect.bottom + 15) ||
+        (clientX >= targetRect.left - 15 && clientX <= targetRect.right + 15 &&
+         clientY >= targetRect.top - 15 && clientY <= targetRect.bottom + 15)
     );
 
     if (droppedOnTarget && !hasInserted) {
